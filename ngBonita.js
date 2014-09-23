@@ -17,7 +17,7 @@
  */
 
 /**
- * This module provide easy access to all rest api of Bonita BPM Engine
+ * This module provides easy access to Bonita BPM REST APIs
  *
  * @author Philippe Ozil
  * @author Rodrigue Le Gall
@@ -25,102 +25,164 @@
 (function() {
 	var app = angular.module('ngBonita', ['ngResource', 'ngCookies']);
 	
-	app.factory('bonita', ['$log', '$http', '$cookies', function($log, $http, $cookies){
-		var bonita = {};
-		
-		bonita.username = null;
-		bonita.userId = null;
-        app.bonitaUrl = '';
-
+	app.run(function ($cookies){
+		// Init cookie that stores Bonita URL - Default: Bonita on local host
+		$cookies.bonitaUrl = 'http://localhost:8080/bonita';
+	});
+	
+	/**
+	* Factory that manages Bonita authentication
+	*/	
+	app.factory('BonitaAuthentication', ['$log', '$http', '$cookies', '$q', 'BonitaSession', function($log, $http, $cookies, $q, BonitaSession){
+	
+		var bonitaAuthentication = {};
+        
         /**
-         * Configure the Bonita server root url
+         * Configure the Bonita application URL (must include application name)
          * @param url
          */
-        bonita.setBonitaUrl = function(url){
-            app.bonitaUrl = url;
-        }
+        bonitaAuthentication.setBonitaUrl = function(url){
+            $cookies.bonitaUrl = url;
+        };
+		
+		/**
+		* Retrieves the currently logged Bonita user id
+		* @return logged Bonita user id
+		*/
+		bonitaAuthentication.getUserId = function(){
+			return $cookies.bonitaUserId;
+		};
+		
+		/**
+		* Retrieves the currently logged Bonita user name
+		* @return logged Bonita user name
+		*/
+		bonitaAuthentication.getUsername = function(){
+			return $cookies.bonitaUsername;
+		};
 		
 		/**
 		* Performs a Bonita login
 		* @param username
 		* @param password
-		* @param fnCallback function called after operation: fnCallback(boolean isSuccess)
 		*/
-		bonita.login = function(username, password, fnCallback)
+		bonitaAuthentication.login = function(username, password)
 		{
+			var deferred = $q.defer();
+		
 			$http({
 				method: 'POST',
-				url: app.bonitaUrl+'/bonita/loginservice',
+				url: $cookies.bonitaUrl +'/loginservice',
 				data: $.param({username : username, password : password, redirect : false}),
 				headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
 			}).success(function (data) {
-				$log.log('bonita.login success');
-				bonita.getSession(function(session) {
+				$log.log('BonitaAuthentication.login success');
+				// Retrieve current session to get user id
+				BonitaSession.getCurrent().$promise.then(function (session) {
 					if (session == null)
-						fnCallback(false);
+						deferred.reject('No active session found');
 					else
 					{
-						bonita.username = session.user_name;
-						bonita.userId = session.user_id;
-						
-						$cookies.username = session.user_name;
-						$cookies.userId = session.user_id;
-						
-						fnCallback(true);
+						// Save basic session data
+						$cookies.bonitaUsername	= session.user_name;
+						$cookies.bonitaUserId	= session.user_id;
+						deferred.resolve();
 					}
 				});
 			}).error(function (data, status) {
-				$log.log('bonita.login failure response '+ status);
-				fnCallback(false);
+				$log.log('BonitaAuthentication.login failure response '+ status);
+				$log.log('Bonita URL: '+ $cookies.bonitaUrl);
+				deferred.reject('BonitaAuthentication.login failure response '+ status);
 			});
+			
+			return deferred.promise;
 		};
 		
 		/**
 		* Performs a Bonita logout
 		*/
-		bonita.logout = function()
+		bonitaAuthentication.logout = function()
 		{
+			var deferred = $q.defer();
+			
 			$http({
 				method: 'GET',
-				url: app.bonitaUrl+'/bonita/logoutservice',
+				url: $cookies.bonitaUrl +'/logoutservice',
 				data: $.param({redirect : false}),
 				headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
+			}).success(function () {
+				$log.log('BonitaAuthentication.logout success');
+				deferred.resolve();
 			});
+			
+			return deferred.promise;
 		};
 		
-		/**
-		* Gets the current Bonita user session (called by login method in order to retrieve user id and to check for existing Bonita session)
-		* @param fnCallback function called after operation: fnCallback(object session). If an error occurs, callback is passed null parameter.
-		*/
-		bonita.getSession = function(fnCallback)
-		{
-			$http.get(app.bonitaUrl+'/bonita/API/system/session/1').success(function (data) {
-				$log.log('bonita.getSession success: user_name='+ data.user_name +", user_id="+ data.user_id);
-				fnCallback(data);
-			}).error(function (data, status) {
-				$log.log('bonita.getSession failure response '+ status +': '+ data);
-				fnCallback(null);
-			});
-		}
-		
-		return bonita;
+		return bonitaAuthentication;
 	}]);
 	
-	app.factory('HumanTask', ['$resource', '$cookies', function($resource, $cookies){
-		return $resource(app.bonitaUrl+'/bonita/API/bpm/humanTask', {p:0, c:10, o : 'priority ASC'},
+	/**
+	* Resource used to access Bonita session information
+	*/
+	app.factory('BonitaSession', ['$resource', '$cookies', function($resource, $cookies){
+		return $resource($cookies.bonitaUrl +'/API/system/session/unused', {},
 			{
-				getFromCurrentUser : {method:'GET', params:{f : ['state=ready', 'user_id='+ $cookies.userId]}, isArray : true}
+				getCurrent : {method:'GET'}
 			}
 		);
 	}]);
 	
-	app.factory('ProcessDefinition', ['$resource', '$cookies', function($resource, $cookies){
-		return $resource(app.bonitaUrl+'/bonita/API/bpm/process', {p:0, c:10, o : 'displayName ASC'},
+	/**
+	* Resource used to access Bonita human tasks instances
+	*/
+	app.factory('HumanTask', ['$resource', '$http', '$cookies', function($resource, $http, $cookies){
+		return $resource($cookies.bonitaUrl +'/API/bpm/humanTask', {p:0, c:10, o : 'priority ASC'},
 			{
-				getAllStartableByCurrentUser : {method:'GET', params:{f : ['user_id='+ $cookies.userId]}, isArray : true}
+				getFromCurrentUser : {
+					method:'GET',
+					params:{f : ['state=ready', 'user_id='+ $cookies.bonitaUserId]},
+					transformResponse:	[paginateResponse].concat($http.defaults.transformResponse)
+				}
 			}
 		);
 	}]);
 	
+	/**
+	* Resource used to access Bonita process definition tasks
+	*/
+	app.factory('ProcessDefinition', ['$resource', '$http', '$cookies', function($resource, $http, $cookies){
+		return $resource($cookies.bonitaUrl +'/API/bpm/process', {p:0, c:10, o : 'displayName ASC'},
+			{
+				getAllStartableByCurrentUser : {
+					method:	'GET',
+					params:	{f : ['user_id='+ $cookies.bonitaUserId]},
+					transformResponse:	[paginateResponse].concat($http.defaults.transformResponse)
+				}
+			}
+		);
+	}]);
+	
+	
+	
+	/**
+	* Transforms an HTTP response in order to extract pagination information from header
+	* @param data original response data
+	* @param headersGetter method used to access response headers
+	* @return transformed response object containing the following attributes {items, pageIndex, pageSize, totalCount}
+	*/
+	function paginateResponse(data, headersGetter)
+	{
+		// Parse pagination header
+		var strContentRange = headersGetter()['content-range'];
+		var arrayContentRange = strContentRange.split('/');
+		var arrayIndexNumPerPage = arrayContentRange[0].split('-');
+		// Assemble response data with pagination
+		return {
+			items :			angular.fromJson(data),
+			pageIndex :		Number(arrayIndexNumPerPage[0]),
+			pageSize :		Number(arrayIndexNumPerPage[1]),
+			totalCount :	Number(arrayContentRange[1])
+		};
+	}
 })();
 

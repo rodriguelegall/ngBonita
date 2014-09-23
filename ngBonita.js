@@ -86,13 +86,13 @@
 						// Save basic session data
 						$cookies.bonitaUsername	= session.user_name;
 						$cookies.bonitaUserId	= session.user_id;
-						deferred.resolve();
+						deferred.resolve(session);
 					}
 				});
-			}).error(function (data, status) {
+			}).error(function (data, status, headers, config) {
 				$log.log('BonitaAuthentication.login failure response '+ status);
 				$log.log('Bonita URL: '+ $cookies.bonitaUrl);
-				deferred.reject('BonitaAuthentication.login failure response '+ status);
+				deferred.reject({data: data, status: status, headers: headers, config: config});
 			});
 			
 			return deferred.promise;
@@ -113,6 +113,9 @@
 			}).success(function () {
 				$log.log('BonitaAuthentication.logout success');
 				deferred.resolve();
+			}).error(function (data, status, headers, config) {
+				$log.log('BonitaAuthentication.logout failure response '+ status);
+				deferred.reject({data: data, status: status, headers: headers, config: config});
 			});
 			
 			return deferred.promise;

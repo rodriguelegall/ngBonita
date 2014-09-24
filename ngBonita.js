@@ -136,10 +136,17 @@
 	}]);
 	
 	/**
+	* Resource used to access Bonita users
+	*/
+	app.factory('User', ['$resource', '$cookies', function($resource, $cookies){
+		return $resource($cookies.bonitaUrl +'/API/identity/user/:id', {id:'@id'});
+	}]);
+	
+	/**
 	* Resource used to access Bonita human tasks instances
 	*/
 	app.factory('HumanTask', ['$resource', '$http', '$cookies', function($resource, $http, $cookies){
-		return $resource($cookies.bonitaUrl +'/API/bpm/humanTask', {p:0, c:10, o : 'priority ASC'},
+		return $resource($cookies.bonitaUrl +'/API/bpm/humanTask/:id', {id:'@id', p:0, c:10, o:'priority ASC'},
 			{
 				getFromCurrentUser : {
 					method:'GET',
@@ -151,12 +158,57 @@
 	}]);
 	
 	/**
-	* Resource used to access Bonita process definition tasks
+	* Resource used to access Bonita archived human tasks instances
+	*/
+	app.factory('ArchivedHumanTask', ['$resource', '$http', '$cookies', function($resource, $http, $cookies){
+		return $resource($cookies.bonitaUrl +'/API/bpm/archivedHumanTask/:id', {id:'@id', p:0, c:10, o:'reached_state_date ASC'},
+			{
+				getCompletedByCurrentUser : {
+					method:'GET',
+					params:{f : ['assigned_id='+ $cookies.bonitaUserId]},
+					transformResponse:	[paginateResponse].concat($http.defaults.transformResponse)
+				}
+			}
+		);
+	}]);
+	
+	/**
+	* Resource used to access Bonita process instances (cases)
+	*/
+	app.factory('ProcessInstance', ['$resource', '$http', '$cookies', function($resource, $http, $cookies){
+		return $resource($cookies.bonitaUrl +'/API/bpm/case/:id', {id:'@id', p:0, c:10},
+			{
+				getStartedByCurrentUser : {
+					method:'GET',
+					params:{f : ['started_by='+ $cookies.bonitaUserId]},
+					transformResponse:	[paginateResponse].concat($http.defaults.transformResponse)
+				}
+			}
+		);
+	}]);
+	
+	/**
+	* Resource used to access Bonita archived process instances (cases)
+	*/
+	app.factory('ArchivedProcessInstance', ['$resource', '$http', '$cookies', function($resource, $http, $cookies){
+		return $resource($cookies.bonitaUrl +'/API/bpm/archivedCase/:id', {id:'@id', p:0, c:10},
+			{
+				getStartedByCurrentUser : {
+					method:'GET',
+					params:{f : ['started_by='+ $cookies.bonitaUserId]},
+					transformResponse:	[paginateResponse].concat($http.defaults.transformResponse)
+				}
+			}
+		);
+	}]);
+	
+	/**
+	* Resource used to access Bonita process definition (apps)
 	*/
 	app.factory('ProcessDefinition', ['$resource', '$http', '$cookies', function($resource, $http, $cookies){
-		return $resource($cookies.bonitaUrl +'/API/bpm/process', {p:0, c:10, o : 'displayName ASC'},
+		return $resource($cookies.bonitaUrl +'/API/bpm/process/:id', {id:'@id', p:0, c:10, o:'displayName ASC'},
 			{
-				getAllStartableByCurrentUser : {
+				getStartableByCurrentUser : {
 					method:	'GET',
 					params:	{f : ['user_id='+ $cookies.bonitaUserId]},
 					transformResponse:	[paginateResponse].concat($http.defaults.transformResponse)

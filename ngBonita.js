@@ -38,11 +38,19 @@
 		var bonitaAuthentication = {};
         
         /**
-         * Configure the Bonita application URL (must include application name)
+         * Configure the Bonita application URL (must include application name without trailing slash)
          * @param url
          */
         bonitaAuthentication.setBonitaUrl = function(url){
             $cookies.bonitaUrl = url;
+        };
+		
+		/**
+         * Gets the Bonita application URL
+         * @param url
+         */
+        bonitaAuthentication.getBonitaUrl = function(){
+            return $cookies.bonitaUrl;
         };
 		
 		/**
@@ -216,7 +224,6 @@
 			}
 		);
 	}]);
-	
 	
 	
 	/**

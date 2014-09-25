@@ -25,7 +25,7 @@ module.exports = function (grunt) {
 				reporter : require('jshint-stylish')
 			},
 			all : {
-				src : [ 'Gruntfile.js', '<%= appConfig.src %>/**/*.js' ]
+				src : [ '<%= appConfig.src %>/**/*.js' ]
 			},
 			test : {
 				options : {
@@ -47,7 +47,7 @@ module.exports = function (grunt) {
 
 		concat : {
 			dist : {
-				src : [ '<%= appConfig.src %>/ngBonita.js' ],
+				src : [ '<%= appConfig.src %>/ngBonita.js', '<%= appConfig.src %>/services/*.js', '<%= appConfig.src %>/resources/*.js' ],
 				dest : '<%= appConfig.dist %>/ngBonita.js'
 			}
 		},

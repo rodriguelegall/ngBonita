@@ -1,0 +1,21 @@
+{
+	"name": "ngBonita",
+	"version": "1.0.0",
+	"main": "./dist/angular-combine.js",
+	"description": "AngularJS module for Bonita BPM platform. This module acts as a Bonita REST API client.",
+	"keywords": [
+		"bonita",
+		"angular",
+		"bpm",
+		"partials",
+		"$templateCache"
+	],
+	"dependencies": {
+		"angular": "^1.2"
+	},
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/astik/ngBonita.git"
+	}
+}

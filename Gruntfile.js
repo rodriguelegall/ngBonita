@@ -72,6 +72,14 @@ module.exports = function (grunt) {
 					'<%= appConfig.dist %>/ngBonita-min.js' : [ '<%= appConfig.tmp %>/ngBonita.js' ]
 				}
 			}
+		},
+
+		update_json : {
+			bower : {
+				src : 'package.json',
+				dest : 'bower.json',
+				fields : [ 'name', 'version', 'description', 'repository', 'keywords', 'licences' ]
+			}
 		}
 	});
 
@@ -79,7 +87,7 @@ module.exports = function (grunt) {
 		console.log('***** TODO *****');
 	});
 
-	grunt.registerTask('build', [ 'clean:dist', 'concat', 'ngAnnotate', 'uglify' ]);
+	grunt.registerTask('build', [ 'clean:dist', 'concat', 'ngAnnotate', 'uglify', 'update_json' ]);
 
 	grunt.registerTask('default', [ 'newer:jshint', 'test', 'build' ]);
 };

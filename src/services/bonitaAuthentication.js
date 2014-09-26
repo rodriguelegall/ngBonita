@@ -3,46 +3,10 @@
 /**
  * Factory that manages Bonita authentication
  */
-angular.module('ngBonita').factory('bonitaAuthentication', function ($log, $http, $cookies, $q, BonitaSession) {
+angular.module('ngBonita').factory('bonitaAuthentication', function ($log, $http, $q, BonitaSession, bonitaConfig) {
 
 	var bonitaAuthentication = {};
 
-	/**
-	 * Configure the Bonita application URL (must include application name
-	 * without trailing slash)
-	 * 
-	 * @param url
-	 */
-	bonitaAuthentication.setBonitaUrl = function (url) {
-		$cookies.bonitaUrl = url;
-	};
-
-	/**
-	 * Gets the Bonita application URL
-	 * 
-	 * @param url
-	 */
-	bonitaAuthentication.getBonitaUrl = function () {
-		return $cookies.bonitaUrl;
-	};
-
-	/**
-	 * Retrieves the currently logged Bonita user id
-	 * 
-	 * @return logged Bonita user id
-	 */
-	bonitaAuthentication.getUserId = function () {
-		return $cookies.bonitaUserId;
-	};
-
-	/**
-	 * Retrieves the currently logged Bonita user name
-	 * 
-	 * @return logged Bonita user name
-	 */
-	bonitaAuthentication.getUsername = function () {
-		return $cookies.bonitaUsername;
-	};
 
 	/**
 	 * Performs a Bonita login
@@ -55,7 +19,7 @@ angular.module('ngBonita').factory('bonitaAuthentication', function ($log, $http
 
 		$http({
 			method : 'POST',
-			url : $cookies.bonitaUrl + '/loginservice',
+			url : bonitaConfig.getBonitaUrl() + '/loginservice',
 			data : $.param({
 				username : username,
 				password : password,
@@ -72,18 +36,15 @@ angular.module('ngBonita').factory('bonitaAuthentication', function ($log, $http
 				if (session === null) {
 					deferred.reject('No active session found');
 				} else {
-					// Save
-					// basic
-					// session
-					// data
-					$cookies.bonitaUsername = session.user_name;
-					$cookies.bonitaUserId = session.user_id;
+					// Save basic session data
+					bonitaConfig.setUsername(session.user_name);
+					bonitaConfig.setUserId(session.user_id);
 					deferred.resolve(session);
 				}
 			});
 		}).error(function (data, status, headers, config) {
 			$log.log('BonitaAuthentication.login failure response ' + status);
-			$log.log('Bonita URL: ' + $cookies.bonitaUrl);
+			$log.log('Bonita URL: ' + bonitaConfig.getBonitaUrl());
 			deferred.reject({
 				data : data,
 				status : status,
@@ -103,7 +64,7 @@ angular.module('ngBonita').factory('bonitaAuthentication', function ($log, $http
 
 		$http({
 			method : 'GET',
-			url : $cookies.bonitaUrl + '/logoutservice',
+			url : bonitaConfig.getBonitaUrl() + '/logoutservice',
 			data : $.param({
 				redirect : false
 			}),
@@ -112,6 +73,8 @@ angular.module('ngBonita').factory('bonitaAuthentication', function ($log, $http
 			}
 		}).success(function () {
 			$log.log('BonitaAuthentication.logout success');
+			bonitaConfig.setUsername(null);
+			bonitaConfig.setUserId(null);
 			deferred.resolve();
 		}).error(function (data, status, headers, config) {
 			$log.log('BonitaAuthentication.logout failure response ' + status);

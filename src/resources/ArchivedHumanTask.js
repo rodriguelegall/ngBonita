@@ -3,8 +3,8 @@
 /**
  * Resource used to access Bonita archived human tasks instances
  */
-angular.module('ngBonita').factory('ArchivedHumanTask', function ($resource, $cookies, bonitaUtils) {
-	return $resource($cookies.bonitaUrl + '/API/bpm/archivedHumanTask/:id', {
+angular.module('ngBonita').factory('ArchivedHumanTask', function ($resource, bonitaConfig, bonitaUtils) {
+	return $resource(bonitaConfig.getBonitaUrl() + '/API/bpm/archivedHumanTask/:id', {
 		id : '@id',
 		p : 0,
 		c : 10,
@@ -13,7 +13,7 @@ angular.module('ngBonita').factory('ArchivedHumanTask', function ($resource, $co
 		getCompletedByCurrentUser : {
 			method : 'GET',
 			params : {
-				f : [ 'assigned_id=' + $cookies.bonitaUserId ]
+				f : [ 'assigned_id=' + bonitaConfig.getUserId() ]
 			},
 			transformResponse : bonitaUtils.transformPaginateresponse()
 		}

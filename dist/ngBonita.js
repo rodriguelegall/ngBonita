@@ -24,9 +24,8 @@
  */
 angular.module('ngBonita', [ 'ngResource', 'ngCookies' ]);
 
-angular.module('ngBonita').run(function ($cookies) {
-	// Init cookie that stores Bonita URL - Default: Bonita on local host
-	$cookies.bonitaUrl = 'http://localhost:8080/bonita';
+angular.module('ngBonita').config(function (bonitaConfigProvider) {
+	bonitaConfigProvider.setBonitaUrl('http://localhost:8080/bonita');
 });
 
 'use strict';
@@ -34,46 +33,10 @@ angular.module('ngBonita').run(function ($cookies) {
 /**
  * Factory that manages Bonita authentication
  */
-angular.module('ngBonita').factory('bonitaAuthentication', function ($log, $http, $cookies, $q, BonitaSession) {
+angular.module('ngBonita').factory('bonitaAuthentication', function ($log, $http, $q, BonitaSession, bonitaConfig) {
 
 	var bonitaAuthentication = {};
 
-	/**
-	 * Configure the Bonita application URL (must include application name
-	 * without trailing slash)
-	 * 
-	 * @param url
-	 */
-	bonitaAuthentication.setBonitaUrl = function (url) {
-		$cookies.bonitaUrl = url;
-	};
-
-	/**
-	 * Gets the Bonita application URL
-	 * 
-	 * @param url
-	 */
-	bonitaAuthentication.getBonitaUrl = function () {
-		return $cookies.bonitaUrl;
-	};
-
-	/**
-	 * Retrieves the currently logged Bonita user id
-	 * 
-	 * @return logged Bonita user id
-	 */
-	bonitaAuthentication.getUserId = function () {
-		return $cookies.bonitaUserId;
-	};
-
-	/**
-	 * Retrieves the currently logged Bonita user name
-	 * 
-	 * @return logged Bonita user name
-	 */
-	bonitaAuthentication.getUsername = function () {
-		return $cookies.bonitaUsername;
-	};
 
 	/**
 	 * Performs a Bonita login
@@ -86,7 +49,7 @@ angular.module('ngBonita').factory('bonitaAuthentication', function ($log, $http
 
 		$http({
 			method : 'POST',
-			url : $cookies.bonitaUrl + '/loginservice',
+			url : bonitaConfig.getBonitaUrl() + '/loginservice',
 			data : $.param({
 				username : username,
 				password : password,
@@ -103,18 +66,15 @@ angular.module('ngBonita').factory('bonitaAuthentication', function ($log, $http
 				if (session === null) {
 					deferred.reject('No active session found');
 				} else {
-					// Save
-					// basic
-					// session
-					// data
-					$cookies.bonitaUsername = session.user_name;
-					$cookies.bonitaUserId = session.user_id;
+					// Save basic session data
+					bonitaConfig.setUsername(session.user_name);
+					bonitaConfig.setUserId(session.user_id);
 					deferred.resolve(session);
 				}
 			});
 		}).error(function (data, status, headers, config) {
 			$log.log('BonitaAuthentication.login failure response ' + status);
-			$log.log('Bonita URL: ' + $cookies.bonitaUrl);
+			$log.log('Bonita URL: ' + bonitaConfig.getBonitaUrl());
 			deferred.reject({
 				data : data,
 				status : status,
@@ -134,7 +94,7 @@ angular.module('ngBonita').factory('bonitaAuthentication', function ($log, $http
 
 		$http({
 			method : 'GET',
-			url : $cookies.bonitaUrl + '/logoutservice',
+			url : bonitaConfig.getBonitaUrl() + '/logoutservice',
 			data : $.param({
 				redirect : false
 			}),
@@ -143,6 +103,8 @@ angular.module('ngBonita').factory('bonitaAuthentication', function ($log, $http
 			}
 		}).success(function () {
 			$log.log('BonitaAuthentication.logout success');
+			bonitaConfig.setUsername(null);
+			bonitaConfig.setUserId(null);
 			deferred.resolve();
 		}).error(function (data, status, headers, config) {
 			$log.log('BonitaAuthentication.logout failure response ' + status);
@@ -158,6 +120,83 @@ angular.module('ngBonita').factory('bonitaAuthentication', function ($log, $http
 	};
 
 	return bonitaAuthentication;
+});
+
+'use strict';
+
+angular.module('ngBonita').provider('bonitaConfig', function () {
+	var bonitaUrl = 'http://localhost:8080/bonita';
+
+	/**
+	 * Configure the Bonita application URL (must include application name
+	 * without trailing slash)
+	 * 
+	 * @param url
+	 */
+	this.setBonitaUrl = function (url) {
+		bonitaUrl = url;
+	};
+
+	this.$get = function ($cookies) {
+		var api = {};
+		var bonitaUserId, bonitaUsername;
+
+		// FIXME is storing into cookies really necessary ?
+		$cookies.bonitaUrl = bonitaUrl;
+
+		/**
+		 * Gets the Bonita application URL
+		 * 
+		 * @return Bonita url
+		 */
+		api.getBonitaUrl = function () {
+			return bonitaUrl;
+		};
+
+		/**
+		 * Retrieves the currently logged Bonita user id
+		 * 
+		 * @return logged Bonita user id
+		 */
+		api.getUserId = function () {
+			return bonitaUserId;
+		};
+
+		/**
+		 * Set the currently logged Bonita user id
+		 * 
+		 * @param newBonitaUserId
+		 */
+		api.setUserId = function (newBonitaUserId) {
+			bonitaUserId = newBonitaUserId;
+
+			// FIXME is storing into cookies really necessary ?
+			$cookies.bonitaUserId = newBonitaUserId;
+		};
+
+		/**
+		 * Retrieves the currently logged Bonita user name
+		 * 
+		 * @return logged Bonita user name
+		 */
+		api.getUsername = function () {
+			return bonitaUsername;
+		};
+
+		/**
+		 * Set the currently logged Bonita user name
+		 * 
+		 * @param newBonitaUsername
+		 */
+		api.setUsername = function (newBonitaUsername) {
+			bonitaUsername = newBonitaUsername;
+
+			// FIXME is storing into cookies really necessary ?
+			$cookies.bonitaUsername = newBonitaUsername;
+		};
+
+		return api;
+	};
 });
 
 'use strict';
@@ -197,8 +236,8 @@ angular.module('ngBonita').factory('bonitaUtils', function ($http) {
 /**
  * Resource used to access Bonita archived human tasks instances
  */
-angular.module('ngBonita').factory('ArchivedHumanTask', function ($resource, $cookies, bonitaUtils) {
-	return $resource($cookies.bonitaUrl + '/API/bpm/archivedHumanTask/:id', {
+angular.module('ngBonita').factory('ArchivedHumanTask', function ($resource, bonitaConfig, bonitaUtils) {
+	return $resource(bonitaConfig.getBonitaUrl() + '/API/bpm/archivedHumanTask/:id', {
 		id : '@id',
 		p : 0,
 		c : 10,
@@ -207,7 +246,7 @@ angular.module('ngBonita').factory('ArchivedHumanTask', function ($resource, $co
 		getCompletedByCurrentUser : {
 			method : 'GET',
 			params : {
-				f : [ 'assigned_id=' + $cookies.bonitaUserId ]
+				f : [ 'assigned_id=' + bonitaConfig.getUserId() ]
 			},
 			transformResponse : bonitaUtils.transformPaginateresponse()
 		}
@@ -219,8 +258,8 @@ angular.module('ngBonita').factory('ArchivedHumanTask', function ($resource, $co
 /**
  * Resource used to access Bonita archived process instances (cases)
  */
-angular.module('ngBonita').factory('ArchivedProcessInstance', function ($resource, $cookies, bonitaUtils) {
-	return $resource($cookies.bonitaUrl + '/API/bpm/archivedCase/:id', {
+angular.module('ngBonita').factory('ArchivedProcessInstance', function ($resource, bonitaConfig, bonitaUtils) {
+	return $resource(bonitaConfig.getBonitaUrl() + '/API/bpm/archivedCase/:id', {
 		id : '@id',
 		p : 0,
 		c : 10
@@ -228,7 +267,7 @@ angular.module('ngBonita').factory('ArchivedProcessInstance', function ($resourc
 		getStartedByCurrentUser : {
 			method : 'GET',
 			params : {
-				f : [ 'started_by=' + $cookies.bonitaUserId ]
+				f : [ 'started_by=' + bonitaConfig.getUserId() ]
 			},
 			transformResponse : bonitaUtils.transformPaginateresponse()
 		}
@@ -240,8 +279,8 @@ angular.module('ngBonita').factory('ArchivedProcessInstance', function ($resourc
 /**
  * Resource used to access Bonita session information
  */
-angular.module('ngBonita').factory('BonitaSession', function ($resource, $cookies) {
-	return $resource($cookies.bonitaUrl + '/API/system/session/unused', {}, {
+angular.module('ngBonita').factory('BonitaSession', function ($resource, bonitaConfig) {
+	return $resource(bonitaConfig.getBonitaUrl() + '/API/system/session/unused', {}, {
 		getCurrent : {
 			method : 'GET'
 		}
@@ -253,8 +292,8 @@ angular.module('ngBonita').factory('BonitaSession', function ($resource, $cookie
 /**
  * Resource used to access Bonita human tasks instances
  */
-angular.module('ngBonita').factory('HumanTask', function ($resource, $cookies, bonitaUtils) {
-	return $resource($cookies.bonitaUrl + '/API/bpm/humanTask/:id', {
+angular.module('ngBonita').factory('HumanTask', function ($resource, bonitaConfig, bonitaUtils) {
+	return $resource(bonitaConfig.getBonitaUrl() + '/API/bpm/humanTask/:id', {
 		id : '@id',
 		p : 0,
 		c : 10,
@@ -263,7 +302,7 @@ angular.module('ngBonita').factory('HumanTask', function ($resource, $cookies, b
 		getFromCurrentUser : {
 			method : 'GET',
 			params : {
-				f : [ 'state=ready', 'user_id=' + $cookies.bonitaUserId ]
+				f : [ 'state=ready', 'user_id=' + bonitaConfig.getUserId() ]
 			},
 			transformResponse : bonitaUtils.transformPaginateresponse()
 		}
@@ -275,8 +314,8 @@ angular.module('ngBonita').factory('HumanTask', function ($resource, $cookies, b
 /**
  * Resource used to access Bonita process definition (apps)
  */
-angular.module('ngBonita').factory('ProcessDefinition', function ($resource, $cookies, bonitaUtils) {
-	return $resource($cookies.bonitaUrl + '/API/bpm/process/:id', {
+angular.module('ngBonita').factory('ProcessDefinition', function ($resource, bonitaConfig, bonitaUtils) {
+	return $resource(bonitaConfig.getBonitaUrl() + '/API/bpm/process/:id', {
 		id : '@id',
 		p : 0,
 		c : 10,
@@ -285,7 +324,7 @@ angular.module('ngBonita').factory('ProcessDefinition', function ($resource, $co
 		getStartableByCurrentUser : {
 			method : 'GET',
 			params : {
-				f : [ 'user_id=' + $cookies.bonitaUserId ]
+				f : [ 'user_id=' + bonitaConfig.getUserId() ]
 			},
 			transformResponse : bonitaUtils.transformPaginateresponse()
 		}
@@ -297,8 +336,8 @@ angular.module('ngBonita').factory('ProcessDefinition', function ($resource, $co
 /**
  * Resource used to access Bonita process instances (cases)
  */
-angular.module('ngBonita').factory('ProcessInstance', function ($resource, $cookies, bonitaUtils) {
-	return $resource($cookies.bonitaUrl + '/API/bpm/case/:id', {
+angular.module('ngBonita').factory('ProcessInstance', function ($resource, bonitaConfig, bonitaUtils) {
+	return $resource(bonitaConfig.getBonitaUrl() + '/API/bpm/case/:id', {
 		id : '@id',
 		p : 0,
 		c : 10
@@ -306,7 +345,7 @@ angular.module('ngBonita').factory('ProcessInstance', function ($resource, $cook
 		getStartedByCurrentUser : {
 			method : 'GET',
 			params : {
-				f : [ 'started_by=' + $cookies.bonitaUserId ]
+				f : [ 'started_by=' + bonitaConfig.getUserId() ]
 			},
 			transformResponse : bonitaUtils.transformPaginateresponse()
 		}
@@ -318,8 +357,8 @@ angular.module('ngBonita').factory('ProcessInstance', function ($resource, $cook
 /**
  * Resource used to access Bonita users
  */
-angular.module('ngBonita').factory('User', function ($resource, $cookies) {
-	return $resource($cookies.bonitaUrl + '/API/identity/user/:id', {
+angular.module('ngBonita').factory('User', function ($resource, bonitaConfig) {
+	return $resource(bonitaConfig.getBonitaUrl() + '/API/identity/user/:id', {
 		id : '@id'
 	});
 });

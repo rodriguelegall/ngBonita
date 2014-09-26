@@ -24,7 +24,6 @@
  */
 angular.module('ngBonita', [ 'ngResource', 'ngCookies' ]);
 
-angular.module('ngBonita').run(function ($cookies) {
-	// Init cookie that stores Bonita URL - Default: Bonita on local host
-	$cookies.bonitaUrl = 'http://localhost:8080/bonita';
+angular.module('ngBonita').config(function (bonitaConfigProvider) {
+	bonitaConfigProvider.setBonitaUrl('http://localhost:8080/bonita');
 });

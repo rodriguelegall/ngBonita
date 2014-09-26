@@ -2,6 +2,10 @@
 
 angular.module('ngBonita').provider('bonitaConfig', function () {
 	var bonitaUrl = 'http://localhost:8080/bonita';
+	var defaultPager = {
+		p : 0,
+		c : 10
+	};
 
 	/**
 	 * Configure the Bonita application URL (must include application name
@@ -11,6 +15,10 @@ angular.module('ngBonita').provider('bonitaConfig', function () {
 	 */
 	this.setBonitaUrl = function (url) {
 		bonitaUrl = url;
+	};
+
+	this.overrideDefaultPagerValues = function (overrideDefaultPagerProperties) {
+		angular.extend(defaultPager, overrideDefaultPagerProperties);
 	};
 
 	this.$get = function ($cookies) {
@@ -69,6 +77,15 @@ angular.module('ngBonita').provider('bonitaConfig', function () {
 
 			// FIXME is storing into cookies really necessary ?
 			$cookies.bonitaUsername = newBonitaUsername;
+		};
+
+		/**
+		 * Retrieves the default pager information
+		 * 
+		 * @return default pager
+		 */
+		api.getDefaultPager = function () {
+			return defaultPager;
 		};
 
 		return api;

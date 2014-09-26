@@ -4,12 +4,12 @@
  * Resource used to access Bonita archived human tasks instances
  */
 angular.module('ngBonita').factory('ArchivedHumanTask', function ($resource, bonitaConfig, bonitaUtils) {
-	return $resource(bonitaConfig.getBonitaUrl() + '/API/bpm/archivedHumanTask/:id', {
+	var data = angular.extend({
 		id : '@id',
-		p : 0,
-		c : 10,
 		o : 'reached_state_date ASC'
-	}, {
+	}, bonitaConfig.getDefaultPager());
+
+	return $resource(bonitaConfig.getBonitaUrl() + '/API/bpm/archivedHumanTask/:id', data, {
 		getCompletedByCurrentUser : {
 			method : 'GET',
 			params : {

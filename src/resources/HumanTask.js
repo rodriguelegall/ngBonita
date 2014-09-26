@@ -4,12 +4,12 @@
  * Resource used to access Bonita human tasks instances
  */
 angular.module('ngBonita').factory('HumanTask', function ($resource, bonitaConfig, bonitaUtils) {
-	return $resource(bonitaConfig.getBonitaUrl() + '/API/bpm/humanTask/:id', {
+	var data = angular.extend({
 		id : '@id',
-		p : 0,
-		c : 10,
 		o : 'priority ASC'
-	}, {
+	}, bonitaConfig.getDefaultPager());
+
+	return $resource(bonitaConfig.getBonitaUrl() + '/API/bpm/humanTask/:id', data, {
 		getFromCurrentUser : {
 			method : 'GET',
 			params : {

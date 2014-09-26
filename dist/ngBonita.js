@@ -126,6 +126,10 @@ angular.module('ngBonita').factory('bonitaAuthentication', function ($log, $http
 
 angular.module('ngBonita').provider('bonitaConfig', function () {
 	var bonitaUrl = 'http://localhost:8080/bonita';
+	var defaultPager = {
+		p : 0,
+		c : 10
+	};
 
 	/**
 	 * Configure the Bonita application URL (must include application name
@@ -135,6 +139,10 @@ angular.module('ngBonita').provider('bonitaConfig', function () {
 	 */
 	this.setBonitaUrl = function (url) {
 		bonitaUrl = url;
+	};
+
+	this.overrideDefaultPagerValues = function (overrideDefaultPagerProperties) {
+		angular.extend(defaultPager, overrideDefaultPagerProperties);
 	};
 
 	this.$get = function ($cookies) {
@@ -195,6 +203,15 @@ angular.module('ngBonita').provider('bonitaConfig', function () {
 			$cookies.bonitaUsername = newBonitaUsername;
 		};
 
+		/**
+		 * Retrieves the default pager information
+		 * 
+		 * @return default pager
+		 */
+		api.getDefaultPager = function () {
+			return defaultPager;
+		};
+
 		return api;
 	};
 });
@@ -237,12 +254,12 @@ angular.module('ngBonita').factory('bonitaUtils', function ($http) {
  * Resource used to access Bonita archived human tasks instances
  */
 angular.module('ngBonita').factory('ArchivedHumanTask', function ($resource, bonitaConfig, bonitaUtils) {
-	return $resource(bonitaConfig.getBonitaUrl() + '/API/bpm/archivedHumanTask/:id', {
+	var data = angular.extend({
 		id : '@id',
-		p : 0,
-		c : 10,
 		o : 'reached_state_date ASC'
-	}, {
+	}, bonitaConfig.getDefaultPager());
+
+	return $resource(bonitaConfig.getBonitaUrl() + '/API/bpm/archivedHumanTask/:id', data, {
 		getCompletedByCurrentUser : {
 			method : 'GET',
 			params : {
@@ -259,11 +276,11 @@ angular.module('ngBonita').factory('ArchivedHumanTask', function ($resource, bon
  * Resource used to access Bonita archived process instances (cases)
  */
 angular.module('ngBonita').factory('ArchivedProcessInstance', function ($resource, bonitaConfig, bonitaUtils) {
-	return $resource(bonitaConfig.getBonitaUrl() + '/API/bpm/archivedCase/:id', {
-		id : '@id',
-		p : 0,
-		c : 10
-	}, {
+	var data = angular.extend({
+		id : '@id'
+	}, bonitaConfig.getDefaultPager());
+
+	return $resource(bonitaConfig.getBonitaUrl() + '/API/bpm/archivedCase/:id', data, {
 		getStartedByCurrentUser : {
 			method : 'GET',
 			params : {
@@ -293,12 +310,12 @@ angular.module('ngBonita').factory('BonitaSession', function ($resource, bonitaC
  * Resource used to access Bonita human tasks instances
  */
 angular.module('ngBonita').factory('HumanTask', function ($resource, bonitaConfig, bonitaUtils) {
-	return $resource(bonitaConfig.getBonitaUrl() + '/API/bpm/humanTask/:id', {
+	var data = angular.extend({
 		id : '@id',
-		p : 0,
-		c : 10,
 		o : 'priority ASC'
-	}, {
+	}, bonitaConfig.getDefaultPager());
+
+	return $resource(bonitaConfig.getBonitaUrl() + '/API/bpm/humanTask/:id', data, {
 		getFromCurrentUser : {
 			method : 'GET',
 			params : {
@@ -315,12 +332,12 @@ angular.module('ngBonita').factory('HumanTask', function ($resource, bonitaConfi
  * Resource used to access Bonita process definition (apps)
  */
 angular.module('ngBonita').factory('ProcessDefinition', function ($resource, bonitaConfig, bonitaUtils) {
-	return $resource(bonitaConfig.getBonitaUrl() + '/API/bpm/process/:id', {
+	var data = angular.extend({
 		id : '@id',
-		p : 0,
-		c : 10,
 		o : 'displayName ASC'
-	}, {
+	}, bonitaConfig.getDefaultPager());
+
+	return $resource(bonitaConfig.getBonitaUrl() + '/API/bpm/process/:id', data, {
 		getStartableByCurrentUser : {
 			method : 'GET',
 			params : {
@@ -337,11 +354,11 @@ angular.module('ngBonita').factory('ProcessDefinition', function ($resource, bon
  * Resource used to access Bonita process instances (cases)
  */
 angular.module('ngBonita').factory('ProcessInstance', function ($resource, bonitaConfig, bonitaUtils) {
-	return $resource(bonitaConfig.getBonitaUrl() + '/API/bpm/case/:id', {
-		id : '@id',
-		p : 0,
-		c : 10
-	}, {
+	var data = angular.extend({
+		id : '@id'
+	}, bonitaConfig.getDefaultPager());
+
+	return $resource(bonitaConfig.getBonitaUrl() + '/API/bpm/case/:id', data, {
 		getStartedByCurrentUser : {
 			method : 'GET',
 			params : {

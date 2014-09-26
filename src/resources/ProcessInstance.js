@@ -4,11 +4,11 @@
  * Resource used to access Bonita process instances (cases)
  */
 angular.module('ngBonita').factory('ProcessInstance', function ($resource, bonitaConfig, bonitaUtils) {
-	return $resource(bonitaConfig.getBonitaUrl() + '/API/bpm/case/:id', {
-		id : '@id',
-		p : 0,
-		c : 10
-	}, {
+	var data = angular.extend({
+		id : '@id'
+	}, bonitaConfig.getDefaultPager());
+
+	return $resource(bonitaConfig.getBonitaUrl() + '/API/bpm/case/:id', data, {
 		getStartedByCurrentUser : {
 			method : 'GET',
 			params : {

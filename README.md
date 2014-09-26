@@ -36,7 +36,7 @@ app.controller('AppController', ['$scope', '$log', 'BonitaAuthentication', 'Proc
 1. Make sure you have installed grunt. See (http://gruntjs.com/getting-started) for more instructions.
 2. Open a command line at the project root directory
 3. Run "npm install"
-4. Run "grunt" (note: you may need to add the "--force" option if it complains about "update_json" not being in camel case)
+4. Run "grunt" (note: you may need to add the "--force" option if it complains about "$" not being defined)
 
 
 **Note:** This module is still under development and is not an official extension of Bonita BPM

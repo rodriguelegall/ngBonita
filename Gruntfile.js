@@ -47,7 +47,7 @@ module.exports = function (grunt) {
 
 		concat : {
 			dist : {
-				src : [ '<%= appConfig.src %>/ngBonita.js', '<%= appConfig.src %>/services/*.js', '<%= appConfig.src %>/resources/*.js' ],
+				src : [ '<%= appConfig.src %>/app.js', '<%= appConfig.src %>/services/*.js', '<%= appConfig.src %>/resources/*.js' ],
 				dest : '<%= appConfig.dist %>/ngBonita.js'
 			}
 		},

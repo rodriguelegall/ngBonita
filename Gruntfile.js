@@ -15,7 +15,8 @@ module.exports = function (grunt) {
 		appConfig : {
 			src : 'src',
 			dist : 'dist',
-			tmp : '.tmp'
+			tmp : '.tmp',
+			test : 'test'
 		},
 
 		// Make sure code styles are up to par and there are no obvious mistakes

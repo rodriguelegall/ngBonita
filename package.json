@@ -1,6 +1,6 @@
 {
   "name": "ngBonita",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "AngularJS module for Bonita BPM platform. This module acts as a Bonita REST API client.",
   "scripts": {},
   "repository": {

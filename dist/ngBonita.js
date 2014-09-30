@@ -81,6 +81,15 @@ angular.module('ngBonita').factory('bonitaAuthentication', function ($log, $http
 	};
 
 	/**
+	 * Is current user logged into Bonita
+	 * 
+	 * @returns true if user is logged, false if not
+	 */
+	bonitaAuthentication.isLogged = function () {
+		return !!bonitaConfig.getUserId();
+	};
+
+	/**
 	 * Performs a Bonita logout
 	 */
 	bonitaAuthentication.logout = function () {

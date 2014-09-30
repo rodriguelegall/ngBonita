@@ -3,7 +3,7 @@
 /**
  * Factory that manages Bonita authentication
  */
-angular.module('ngBonita').factory('bonitaAuthentication', function ($log, $http, $q, BonitaSession, bonitaConfig) {
+angular.module('ngBonita').factory('bonitaAuthentication', function ($log, $http, $q, BonitaSession, bonitaConfig, bonitaUtils) {
 
 	var bonitaAuthentication = {};
 
@@ -20,7 +20,7 @@ angular.module('ngBonita').factory('bonitaAuthentication', function ($log, $http
 		$http({
 			method : 'POST',
 			url : bonitaConfig.getBonitaUrl() + '/loginservice',
-			data : $.param({
+			data : bonitaUtils.serializeData({
 				username : username,
 				password : password,
 				redirect : false
@@ -65,7 +65,7 @@ angular.module('ngBonita').factory('bonitaAuthentication', function ($log, $http
 		$http({
 			method : 'GET',
 			url : bonitaConfig.getBonitaUrl() + '/logoutservice',
-			data : $.param({
+			data : bonitaUtils.serializeData({
 				redirect : false
 			}),
 			headers : {

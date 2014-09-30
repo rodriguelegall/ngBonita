@@ -33,7 +33,7 @@ angular.module('ngBonita').config(function (bonitaConfigProvider) {
 /**
  * Factory that manages Bonita authentication
  */
-angular.module('ngBonita').factory('bonitaAuthentication', function ($log, $http, $q, BonitaSession, bonitaConfig) {
+angular.module('ngBonita').factory('bonitaAuthentication', function ($log, $http, $q, BonitaSession, bonitaConfig, bonitaUtils) {
 
 	var bonitaAuthentication = {};
 
@@ -50,7 +50,7 @@ angular.module('ngBonita').factory('bonitaAuthentication', function ($log, $http
 		$http({
 			method : 'POST',
 			url : bonitaConfig.getBonitaUrl() + '/loginservice',
-			data : $.param({
+			data : bonitaUtils.serializeData({
 				username : username,
 				password : password,
 				redirect : false
@@ -95,7 +95,7 @@ angular.module('ngBonita').factory('bonitaAuthentication', function ($log, $http
 		$http({
 			method : 'GET',
 			url : bonitaConfig.getBonitaUrl() + '/logoutservice',
-			data : $.param({
+			data : bonitaUtils.serializeData({
 				redirect : false
 			}),
 			headers : {
@@ -245,6 +245,35 @@ angular.module('ngBonita').factory('bonitaUtils', function ($http) {
 		return [ paginateResponse ].concat($http.defaults.transformResponse);
 	};
 
+	/**
+	* Serializes data into an URI format (credit: Sudhir from stackoverflow)
+	*/
+	api.serializeData = function (data) {
+		// If this is not an object, defer to native stringification.
+		if (!angular.isObject(data)) {
+			return (data === null) ? '' : data.toString(); 
+		}
+		
+		var buffer = [];
+
+		// Serialize each key in the object.
+		for (var name in data) { 
+			if (!data.hasOwnProperty(name)) {
+				continue; 
+			}
+
+			var value = data[name];
+
+			buffer.push(
+				encodeURIComponent(name) + '=' + encodeURIComponent((value === null) ? '' : value)
+			); 
+		}
+
+		// Serialize the buffer and clean it up for transportation.
+		var source = buffer.join('&').replace(/%20/g, '+'); 
+		return (source); 
+	};
+	
 	return api;
 });
 

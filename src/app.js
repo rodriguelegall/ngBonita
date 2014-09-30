@@ -23,7 +23,3 @@
  * @author Rodrigue Le Gall
  */
 angular.module('ngBonita', [ 'ngResource', 'ngCookies' ]);
-
-angular.module('ngBonita').config(function (bonitaConfigProvider) {
-	bonitaConfigProvider.setBonitaUrl('http://localhost:8080/bonita');
-});

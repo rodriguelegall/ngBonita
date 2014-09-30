@@ -12,7 +12,9 @@ angular.module('ngBonita').factory('ArchivedProcessInstance', function ($resourc
 		getStartedByCurrentUser : {
 			method : 'GET',
 			params : {
-				f : [ 'started_by=' + bonitaConfig.getUserId() ]
+				f : function () {
+					return [ 'started_by=' + bonitaConfig.getUserId() ];
+				}
 			},
 			transformResponse : bonitaUtils.transformPaginateresponse()
 		}

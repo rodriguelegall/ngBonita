@@ -13,7 +13,9 @@ angular.module('ngBonita').factory('HumanTask', function ($resource, bonitaConfi
 		getFromCurrentUser : {
 			method : 'GET',
 			params : {
-				f : [ 'state=ready', 'user_id=' + bonitaConfig.getUserId() ]
+				f : function () {
+					return [ 'state=ready', 'user_id=' + bonitaConfig.getUserId() ];
+				}
 			},
 			transformResponse : bonitaUtils.transformPaginateresponse()
 		}

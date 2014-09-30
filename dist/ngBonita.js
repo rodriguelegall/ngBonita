@@ -33,7 +33,6 @@ angular.module('ngBonita').factory('bonitaAuthentication', function ($log, $http
 
 	var bonitaAuthentication = {};
 
-
 	/**
 	 * Performs a Bonita login
 	 * 
@@ -56,8 +55,7 @@ angular.module('ngBonita').factory('bonitaAuthentication', function ($log, $http
 			}
 		}).success(function () {
 			$log.log('BonitaAuthentication.login success');
-			// Retrieve current session
-			// to get user id
+			// Retrieve current session to get user id
 			BonitaSession.getCurrent().$promise.then(function (session) {
 				if (session === null) {
 					deferred.reject('No active session found');
@@ -288,7 +286,9 @@ angular.module('ngBonita').factory('ArchivedHumanTask', function ($resource, bon
 		getCompletedByCurrentUser : {
 			method : 'GET',
 			params : {
-				f : [ 'assigned_id=' + bonitaConfig.getUserId() ]
+				f : function () {
+					return [ 'assigned_id=' + bonitaConfig.getUserId() ];
+				}
 			},
 			transformResponse : bonitaUtils.transformPaginateresponse()
 		}
@@ -309,7 +309,9 @@ angular.module('ngBonita').factory('ArchivedProcessInstance', function ($resourc
 		getStartedByCurrentUser : {
 			method : 'GET',
 			params : {
-				f : [ 'started_by=' + bonitaConfig.getUserId() ]
+				f : function () {
+					return [ 'started_by=' + bonitaConfig.getUserId() ];
+				}
 			},
 			transformResponse : bonitaUtils.transformPaginateresponse()
 		}
@@ -344,7 +346,9 @@ angular.module('ngBonita').factory('HumanTask', function ($resource, bonitaConfi
 		getFromCurrentUser : {
 			method : 'GET',
 			params : {
-				f : [ 'state=ready', 'user_id=' + bonitaConfig.getUserId() ]
+				f : function () {
+					return [ 'state=ready', 'user_id=' + bonitaConfig.getUserId() ];
+				}
 			},
 			transformResponse : bonitaUtils.transformPaginateresponse()
 		}
@@ -366,7 +370,9 @@ angular.module('ngBonita').factory('ProcessDefinition', function ($resource, bon
 		getStartableByCurrentUser : {
 			method : 'GET',
 			params : {
-				f : [ 'user_id=' + bonitaConfig.getUserId() ]
+				f : function () {
+					return [ 'user_id=' + bonitaConfig.getUserId() ];
+				}
 			},
 			transformResponse : bonitaUtils.transformPaginateresponse()
 		}
@@ -387,7 +393,9 @@ angular.module('ngBonita').factory('ProcessInstance', function ($resource, bonit
 		getStartedByCurrentUser : {
 			method : 'GET',
 			params : {
-				f : [ 'started_by=' + bonitaConfig.getUserId() ]
+				f : function () {
+					return [ 'started_by=' + bonitaConfig.getUserId() ];
+				}
 			},
 			transformResponse : bonitaUtils.transformPaginateresponse()
 		}

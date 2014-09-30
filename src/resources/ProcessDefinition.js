@@ -13,7 +13,9 @@ angular.module('ngBonita').factory('ProcessDefinition', function ($resource, bon
 		getStartableByCurrentUser : {
 			method : 'GET',
 			params : {
-				f : [ 'user_id=' + bonitaConfig.getUserId() ]
+				f : function () {
+					return [ 'user_id=' + bonitaConfig.getUserId() ];
+				}
 			},
 			transformResponse : bonitaUtils.transformPaginateresponse()
 		}

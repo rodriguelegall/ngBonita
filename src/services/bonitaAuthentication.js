@@ -7,7 +7,6 @@ angular.module('ngBonita').factory('bonitaAuthentication', function ($log, $http
 
 	var bonitaAuthentication = {};
 
-
 	/**
 	 * Performs a Bonita login
 	 * 
@@ -30,8 +29,7 @@ angular.module('ngBonita').factory('bonitaAuthentication', function ($log, $http
 			}
 		}).success(function () {
 			$log.log('BonitaAuthentication.login success');
-			// Retrieve current session
-			// to get user id
+			// Retrieve current session to get user id
 			BonitaSession.getCurrent().$promise.then(function (session) {
 				if (session === null) {
 					deferred.reject('No active session found');

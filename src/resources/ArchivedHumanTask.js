@@ -13,7 +13,9 @@ angular.module('ngBonita').factory('ArchivedHumanTask', function ($resource, bon
 		getCompletedByCurrentUser : {
 			method : 'GET',
 			params : {
-				f : [ 'assigned_id=' + bonitaConfig.getUserId() ]
+				f : function () {
+					return [ 'assigned_id=' + bonitaConfig.getUserId() ];
+				}
 			},
 			transformResponse : bonitaUtils.transformPaginateresponse()
 		}

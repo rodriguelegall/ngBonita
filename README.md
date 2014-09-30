@@ -14,7 +14,7 @@ app.config(function (bonitaConfigProvider) {
 });
 
 // Application controller
-app.controller('AppController', ['$scope', '$log', 'BonitaAuthentication', 'ProcessDefinition', function($scope, $log, BonitaAuthentication, ProcessDefinition){
+app.controller('AppController', function($scope, $log, bonitaAuthentication, ProcessDefinition){
 	// Logs into Bonita as 'walter.bates'
 	bonitaAuthentication.login('walter.bates','bpm').then(function() {
 	
@@ -28,7 +28,7 @@ app.controller('AppController', ['$scope', '$log', 'BonitaAuthentication', 'Proc
 			bonitaAuthentication.logout();
 		});
 	});
-}]);
+});
 ```
 
 ## Build instructions

@@ -3,17 +3,19 @@
 /**
  * Resource used to access Bonita process definition (apps)
  */
-angular.module('ngBonita').factory('ProcessDefinition', function ($resource, $cookies, bonitaUtils) {
-	return $resource($cookies.bonitaUrl + '/API/bpm/process/:id', {
+angular.module('ngBonita').factory('ProcessDefinition', function ($resource, bonitaConfig, bonitaUtils) {
+	var data = angular.extend({
 		id : '@id',
-		p : 0,
-		c : 10,
 		o : 'displayName ASC'
-	}, {
+	}, bonitaConfig.getDefaultPager());
+
+	return $resource(bonitaConfig.getBonitaUrl() + '/API/bpm/process/:id', data, {
 		getStartableByCurrentUser : {
 			method : 'GET',
 			params : {
-				f : [ 'user_id=' + $cookies.bonitaUserId ]
+				f : function () {
+					return [ 'user_id=' + bonitaConfig.getUserId() ];
+				}
 			},
 			transformResponse : bonitaUtils.transformPaginateresponse()
 		}

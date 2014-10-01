@@ -3,16 +3,18 @@
 /**
  * Resource used to access Bonita archived process instances (cases)
  */
-angular.module('ngBonita').factory('ArchivedProcessInstance', function ($resource, $cookies, bonitaUtils) {
-	return $resource($cookies.bonitaUrl + '/API/bpm/archivedCase/:id', {
-		id : '@id',
-		p : 0,
-		c : 10
-	}, {
+angular.module('ngBonita').factory('ArchivedProcessInstance', function ($resource, bonitaConfig, bonitaUtils) {
+	var data = angular.extend({
+		id : '@id'
+	}, bonitaConfig.getDefaultPager());
+
+	return $resource(bonitaConfig.getBonitaUrl() + '/API/bpm/archivedCase/:id', data, {
 		getStartedByCurrentUser : {
 			method : 'GET',
 			params : {
-				f : [ 'started_by=' + $cookies.bonitaUserId ]
+				f : function () {
+					return [ 'started_by=' + bonitaConfig.getUserId() ];
+				}
 			},
 			transformResponse : bonitaUtils.transformPaginateresponse()
 		}

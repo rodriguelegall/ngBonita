@@ -37,7 +37,6 @@ app.controller('AppController', function($scope, $log, bonitaAuthentication, Pro
 2. Open a command line at the project root directory
 3. Run "npm install"
 4. Run "grunt build"
-5. [optional, but good to check] Run "grunt" to validate your code through JSHint (note: you may need to add the "--force" option if it complains about "$" not being defined)
 
 
 **Note:** This module is still under development and is not an official extension of Bonita BPM

@@ -79,7 +79,7 @@ module.exports = function (grunt) {
 			bower : {
 				src : 'package.json',
 				dest : 'bower.json',
-				fields : [ 'name', 'version', 'description', 'repository', 'keywords', 'licences' ]
+				fields : [ 'name', 'version', 'description', 'repository', 'licences', 'homepage' ]
 			}
 		}
 	});

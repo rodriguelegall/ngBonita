@@ -2,7 +2,12 @@ ngBonita
 ========
 
 AngularJS module for Bonita BPM platform. This module acts as a Bonita REST API client.
-It allows to quickly build business application by providing user management API, authentication API, business process API, ...
+It allows to quickly build business application by providing user management API, authentication API, business process API, 
+...
+
+**Notes:**
+- this module is not an official extension of Bonita BPM
+- this module is compatible with Bonita BPM 6.0 and onward but some resources may be missing in early Bonita versions
 
 ## Simple Example:
 ``` js
@@ -31,12 +36,16 @@ app.controller('AppController', function($scope, $log, bonitaAuthentication, Pro
 });
 ```
 
-## Build instructions
+## Download
+The project binaries are available [here](https://github.com/rodriguelegall/ngBonita/releases)
 
-1. Make sure you have installed grunt. See (http://gruntjs.com/getting-started) for more instructions.
+## Build instructions
+If you wish to build the project from the sources, follow these instructions:
+
+1. Make sure you have installed grunt. See [this guide](http://gruntjs.com/getting-started) for more instructions.
 2. Open a command line at the project root directory
 3. Run "npm install"
 4. Run "grunt build"
 
 
-**Note:** This module is still under development and is not an official extension of Bonita BPM
+

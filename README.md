@@ -39,6 +39,11 @@ app.controller('AppController', function($scope, $log, bonitaAuthentication, Pro
 ## Download
 The project binaries are available [here](https://github.com/rodriguelegall/ngBonita/releases)
 
+## Dependencies
+In order to use ngBonita, you will need the following JS dependencies:
+- Angular core 1.3.0 or upper
+- Angular resource module
+
 ## Build instructions
 If you wish to build the project from the sources, follow these instructions:
 

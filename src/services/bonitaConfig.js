@@ -6,7 +6,9 @@ angular.module('ngBonita').provider('bonitaConfig', function () {
 		p : 0,
 		c : 10
 	};
-
+	var bonitaUserId = null;
+	var bonitaUsername = null;
+	
 	/**
 	 * Configure the Bonita application URL (must include application name
 	 * without trailing slash)
@@ -21,12 +23,8 @@ angular.module('ngBonita').provider('bonitaConfig', function () {
 		angular.extend(defaultPager, overrideDefaultPagerProperties);
 	};
 
-	this.$get = function ($cookies) {
+	this.$get = function () {
 		var api = {};
-		var bonitaUserId, bonitaUsername;
-
-		// FIXME is storing into cookies really necessary ?
-		$cookies.bonitaUrl = bonitaUrl;
 
 		/**
 		 * Gets the Bonita application URL
@@ -53,9 +51,6 @@ angular.module('ngBonita').provider('bonitaConfig', function () {
 		 */
 		api.setUserId = function (newBonitaUserId) {
 			bonitaUserId = newBonitaUserId;
-
-			// FIXME is storing into cookies really necessary ?
-			$cookies.bonitaUserId = newBonitaUserId;
 		};
 
 		/**
@@ -74,9 +69,6 @@ angular.module('ngBonita').provider('bonitaConfig', function () {
 		 */
 		api.setUsername = function (newBonitaUsername) {
 			bonitaUsername = newBonitaUsername;
-
-			// FIXME is storing into cookies really necessary ?
-			$cookies.bonitaUsername = newBonitaUsername;
 		};
 
 		/**

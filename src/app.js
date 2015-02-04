@@ -22,4 +22,4 @@
  * @author Philippe Ozil
  * @author Rodrigue Le Gall
  */
-angular.module('ngBonita', [ 'ngResource', 'ngCookies' ]);
+angular.module('ngBonita', [ 'ngResource' ]);

@@ -16,6 +16,8 @@ angular.module('ngBonita').factory('bonitaAuthentication', function ($log, $http
 	bonitaAuthentication.login = function (username, password) {
 		var deferred = $q.defer();
 
+		bonitaAuthentication.isLogged = false;
+		
 		$http({
 			method : 'POST',
 			url : bonitaConfig.getBonitaUrl() + '/loginservice',
@@ -31,7 +33,7 @@ angular.module('ngBonita').factory('bonitaAuthentication', function ($log, $http
 			$log.log('BonitaAuthentication.login success');
 			// Retrieve current session to get user id
 			BonitaSession.getCurrent().$promise.then(function (session) {
-				if (session === null) {
+				if (typeof session.user_id == 'undefined') {
 					deferred.reject('No active session found');
 				} else {
 					// Save basic session data
@@ -55,14 +57,28 @@ angular.module('ngBonita').factory('bonitaAuthentication', function ($log, $http
 	};
 
 	/**
-	 * Is current user logged into Bonita
-	 * 
-	 * @returns true if user is logged, false if not
+	 * Checks whether a session is available and updates isLogged accordingly
 	 */
-	bonitaAuthentication.isLogged = function () {
-		return !!bonitaConfig.getUserId();
+	bonitaAuthentication.checkForActiveSession = function () {
+		var deferred = $q.defer();
+		
+		// Check if a session was created earlier
+		BonitaSession.getCurrent().$promise.then(function (session) {
+			if (typeof session.user_id == 'undefined') 
+				bonitaAuthentication.isLogged = false;
+			else {
+				// Save basic session data
+				console.log(session);
+				bonitaConfig.setUsername(session.user_name);
+				bonitaConfig.setUserId(session.user_id);
+				bonitaAuthentication.isLogged = true;
+			}
+			deferred.resolve(session);
+		});
+		
+		return deferred.promise;
 	};
-
+	
 	/**
 	 * Performs a Bonita logout
 	 */

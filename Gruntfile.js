@@ -70,7 +70,7 @@ module.exports = function (grunt) {
 		uglify : {
 			dist : {
 				files : {
-					'<%= appConfig.dist %>/ngBonita-min.js' : [ '<%= appConfig.tmp %>/ngBonita.js' ]
+					'<%= appConfig.dist %>/ngBonita.min.js' : [ '<%= appConfig.tmp %>/ngBonita.js' ]
 				}
 			}
 		},

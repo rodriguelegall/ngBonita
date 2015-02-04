@@ -68,7 +68,6 @@ angular.module('ngBonita').factory('bonitaAuthentication', function ($log, $http
 				bonitaAuthentication.isLogged = false;
 			else {
 				// Save basic session data
-				console.log(session);
 				bonitaConfig.setUsername(session.user_name);
 				bonitaConfig.setUserId(session.user_id);
 				bonitaAuthentication.isLogged = true;

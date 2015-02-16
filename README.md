@@ -1,6 +1,6 @@
 ngBonita
 ========
-# Table of Content
+**Table of Content**
 - [About](#about)
 - [Installation](#installation)
   - Download

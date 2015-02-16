@@ -7,7 +7,7 @@ ngBonita
   - Dependencies
   - Build instructions
 - Simple example
-- Resource Documentation
+- [Resource Documentation](#resource-documentation)
 
 # About
 AngularJS module for Bonita BPM platform. This module acts as a Bonita REST API client.

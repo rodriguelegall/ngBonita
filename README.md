@@ -1,12 +1,12 @@
 ngBonita
 ========
 # Table of Content
-- About
-- Installation
+- [About](#about)
+- [Installation](#installation)
   - Download
   - Dependencies
   - Build instructions
-- Simple example
+- [Simple example](#simple-example)
 - [Resource Documentation](#resource-documentation)
 
 # About

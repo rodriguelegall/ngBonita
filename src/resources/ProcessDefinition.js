@@ -17,7 +17,7 @@ angular.module('ngBonita').factory('ProcessDefinition', function ($resource, bon
 					return [ 'user_id=' + bonitaConfig.getUserId() ];
 				}
 			},
-			transformResponse : bonitaUtils.transformPaginateresponse()
+			transformResponse : bonitaUtils.transformPaginateResponse()
 		}
 	});
 });

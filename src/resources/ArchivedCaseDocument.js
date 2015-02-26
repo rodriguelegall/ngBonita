@@ -17,11 +17,11 @@ angular.module('ngBonita').factory('ArchivedCaseDocument', function ($resource, 
 					return [ 'submittedBy=' + bonitaConfig.getUserId() ];
 				}
 			},
-			transformResponse : bonitaUtils.transformPaginateresponse()
+			transformResponse : bonitaUtils.transformPaginateResponse()
 		},
 		search : {
 			method : 'GET',
-			transformResponse : bonitaUtils.transformPaginateresponse()
+			transformResponse : bonitaUtils.transformPaginateResponse()
 		}
 	});
 });

@@ -251,7 +251,7 @@ angular.module('ngBonita').factory('bonitaUtils', function ($http) {
 		};
 	};
 
-	api.transformPaginateresponse = function () {
+	api.transformPaginateResponse = function () {
 		return [ paginateResponse ].concat($http.defaults.transformResponse);
 	};
 
@@ -306,11 +306,11 @@ angular.module('ngBonita').factory('ArchivedCaseDocument', function ($resource, 
 					return [ 'submittedBy=' + bonitaConfig.getUserId() ];
 				}
 			},
-			transformResponse : bonitaUtils.transformPaginateresponse()
+			transformResponse : bonitaUtils.transformPaginateResponse()
 		},
 		search : {
 			method : 'GET',
-			transformResponse : bonitaUtils.transformPaginateresponse()
+			transformResponse : bonitaUtils.transformPaginateResponse()
 		}
 	});
 });
@@ -334,7 +334,7 @@ angular.module('ngBonita').factory('ArchivedHumanTask', function ($resource, bon
 					return [ 'assigned_id=' + bonitaConfig.getUserId() ];
 				}
 			},
-			transformResponse : bonitaUtils.transformPaginateresponse()
+			transformResponse : bonitaUtils.transformPaginateResponse()
 		}
 	});
 });
@@ -357,7 +357,7 @@ angular.module('ngBonita').factory('ArchivedProcessInstance', function ($resourc
 					return [ 'started_by=' + bonitaConfig.getUserId() ];
 				}
 			},
-			transformResponse : bonitaUtils.transformPaginateresponse()
+			transformResponse : bonitaUtils.transformPaginateResponse()
 		}
 	});
 });
@@ -395,11 +395,11 @@ angular.module('ngBonita').factory('CaseDocument', function ($resource, bonitaCo
 					return [ 'submittedBy=' + bonitaConfig.getUserId() ];
 				}
 			},
-			transformResponse : bonitaUtils.transformPaginateresponse()
+			transformResponse : bonitaUtils.transformPaginateResponse()
 		},
 		search : {
 			method : 'GET',
-			transformResponse : bonitaUtils.transformPaginateresponse()
+			transformResponse : bonitaUtils.transformPaginateResponse()
 		}
 	});
 });
@@ -423,7 +423,7 @@ angular.module('ngBonita').factory('HumanTask', function ($resource, bonitaConfi
 					return [ 'state=ready', 'user_id=' + bonitaConfig.getUserId() ];
 				}
 			},
-			transformResponse : bonitaUtils.transformPaginateresponse()
+			transformResponse : bonitaUtils.transformPaginateResponse()
 		}
 	});
 });
@@ -447,7 +447,7 @@ angular.module('ngBonita').factory('ProcessDefinition', function ($resource, bon
 					return [ 'user_id=' + bonitaConfig.getUserId() ];
 				}
 			},
-			transformResponse : bonitaUtils.transformPaginateresponse()
+			transformResponse : bonitaUtils.transformPaginateResponse()
 		}
 	});
 });
@@ -470,7 +470,7 @@ angular.module('ngBonita').factory('ProcessInstance', function ($resource, bonit
 					return [ 'started_by=' + bonitaConfig.getUserId() ];
 				}
 			},
-			transformResponse : bonitaUtils.transformPaginateresponse()
+			transformResponse : bonitaUtils.transformPaginateResponse()
 		}
 	});
 });

@@ -23,7 +23,7 @@ angular.module('ngBonita').factory('bonitaUtils', function ($http) {
 		};
 	};
 
-	api.transformPaginateresponse = function () {
+	api.transformPaginateResponse = function () {
 		return [ paginateResponse ].concat($http.defaults.transformResponse);
 	};
 

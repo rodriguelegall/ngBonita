@@ -17,7 +17,7 @@ angular.module('ngBonita').factory('HumanTask', function ($resource, bonitaConfi
 					return [ 'state=ready', 'user_id=' + bonitaConfig.getUserId() ];
 				}
 			},
-			transformResponse : bonitaUtils.transformPaginateresponse()
+			transformResponse : bonitaUtils.transformPaginateResponse()
 		}
 	});
 });

@@ -33,7 +33,7 @@ angular.module('ngBonita').factory('bonitaAuthentication', function ($log, $http
 			$log.log('BonitaAuthentication.login success');
 			// Retrieve current session to get user id
 			BonitaSession.getCurrent().$promise.then(function (session) {
-				if (typeof session.user_id == 'undefined') {
+				if (typeof session.user_id === 'undefined') {
 					deferred.reject('No active session found');
 				} else {
 					// Save basic session data
@@ -64,8 +64,9 @@ angular.module('ngBonita').factory('bonitaAuthentication', function ($log, $http
 		
 		// Check if a session was created earlier
 		BonitaSession.getCurrent().$promise.then(function (session) {
-			if (typeof session.user_id == 'undefined') 
+			if (typeof session.user_id === 'undefined') {
 				bonitaAuthentication.isLogged = false;
+			}
 			else {
 				// Save basic session data
 				bonitaConfig.setUsername(session.user_name);
@@ -77,7 +78,7 @@ angular.module('ngBonita').factory('bonitaAuthentication', function ($log, $http
 		
 		return deferred.promise;
 	};
-	
+
 	/**
 	 * Performs a Bonita logout
 	 */

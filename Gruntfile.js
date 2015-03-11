@@ -81,6 +81,12 @@ module.exports = function (grunt) {
 				dest : 'bower.json',
 				fields : [ 'name', 'version', 'description', 'repository', 'licences', 'homepage' ]
 			}
+		},
+
+		release : {
+			options : {
+				additionalFiles : [ 'bower.json' ]
+			}
 		}
 	});
 
@@ -90,5 +96,5 @@ module.exports = function (grunt) {
 
 	grunt.registerTask('build', [ 'clean:dist', 'concat', 'ngAnnotate', 'uglify', 'update_json' ]);
 
-	grunt.registerTask('default', [ 'newer:jshint', 'test', 'build' ]);
+	grunt.registerTask('default', [ 'jshint', 'test', 'build' ]);
 };

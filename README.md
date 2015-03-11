@@ -37,6 +37,14 @@ If you wish to build the project from the sources, follow these instructions:
 4. Run "grunt build"
 
 ## Release instructions
+A new release should always start with a fresh build :
+
+```
+grunt
+```
+
+That will guarantee that the *dist* folder is up-to-date.
+
 This project use [grunt-release](https://github.com/geddski/grunt-release) for its release process.
 To release a new version, you simply have to use one of these *grunt-release* process, depending on the version you want to set :
 

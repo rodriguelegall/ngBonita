@@ -65,12 +65,14 @@ angular.module('ngBonita').factory('bonitaAuthentication', function ($log, $http
 					// Save basic session data
 					bonitaConfig.setUsername(session.user_name);
 					bonitaConfig.setUserId(session.user_id);
+					bonitaAuthentication.isLogged = true;
 					deferred.resolve(session);
 				}
 			});
 		}).error(function (data, status, headers, config) {
 			$log.log('BonitaAuthentication.login failure response ' + status);
 			$log.log('Bonita URL: ' + bonitaConfig.getBonitaUrl());
+			bonitaAuthentication.isLogged = false;
 			deferred.reject({
 				data : data,
 				status : status,
@@ -124,9 +126,11 @@ angular.module('ngBonita').factory('bonitaAuthentication', function ($log, $http
 			$log.log('BonitaAuthentication.logout success');
 			bonitaConfig.setUsername(null);
 			bonitaConfig.setUserId(null);
+			bonitaAuthentication.isLogged = false;
 			deferred.resolve();
 		}).error(function (data, status, headers, config) {
 			$log.log('BonitaAuthentication.logout failure response ' + status);
+			bonitaAuthentication.isLogged = false;
 			deferred.reject({
 				data : data,
 				status : status,

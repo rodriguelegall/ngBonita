@@ -33,4 +33,4 @@ angular
 					method: 'GET'					
 				}
 			});
-	});
+	}); 

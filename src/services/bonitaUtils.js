@@ -55,6 +55,6 @@ angular.module('ngBonita').factory('bonitaUtils', function ($http,bonitaConfig) 
 		var source = buffer.join('&').replace(/%20/g, '+'); 
 		return (source); 
 	};
-	
+	 
 	return api;
 });

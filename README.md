@@ -36,6 +36,32 @@ If you wish to build the project from the sources, follow these instructions:
 3. Run "npm install"
 4. Run "grunt build"
 
+## Release instructions
+A new release should always start with a fresh build :
+
+```
+grunt
+```
+
+That will guarantee that the *dist* folder is up-to-date.
+
+This project use [grunt-release](https://github.com/geddski/grunt-release) for its release process.
+To release a new version, you simply have to use one of these *grunt-release* process, depending on the version you want to set :
+
+```
+grunt release
+grunt release:minor
+grunt release:major
+```
+
+If you're afraid to try it directly, you can see what it will do with a dry run, using one of these :
+
+```
+grunt release --no-write
+grunt release:minor --no-write
+grunt release:major --no-write
+```
+
 # Simple Example:
 
 The following example will log in Bonita with user "walter.bates" and will list the process definitions that he has the right to start using the browser's console:

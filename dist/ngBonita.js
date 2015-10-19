@@ -233,7 +233,7 @@ angular.module('ngBonita').provider('bonitaConfig', function () {
 
 'use strict';
 
-angular.module('ngBonita').factory('bonitaUtils', function ($http) {
+angular.module('ngBonita').factory('bonitaUtils', function ($http,bonitaConfig) {
 	var api = {};
 
 	/**
@@ -245,7 +245,7 @@ angular.module('ngBonita').factory('bonitaUtils', function ($http) {
 	var paginateResponse = function (data, headersGetter) {
 		// Parse pagination header
 		var strContentRange = headersGetter()['content-range'];
-		var arrayContentRange = strContentRange.split('/');
+		var arrayContentRange = strContentRange ? strContentRange.split('/') :[ bonitaConfig.getDefaultPager().p + '-' + bonitaConfig.getDefaultPager().c];
 		var arrayIndexNumPerPage = arrayContentRange[0].split('-');
 		// Assemble response data with pagination
 		return {
@@ -381,6 +381,42 @@ angular.module('ngBonita').factory('BonitaSession', function ($resource, bonitaC
 	});
 });
 
+'use strict';
+
+
+angular
+	.module('ngBonita')
+	.factory('BusinessData', function ($resource, bonitaConfig, bonitaUtils) {
+		var data = angular.extend({
+			businessDataType: '@businessDataType',
+			q: '@queryName',
+			f: '@fields',
+			persistanceId: '@persistenceId'
+
+		}, bonitaConfig.getDefaultPager());
+		
+		//$resource(url,[paramDefaults],[actions],options);		
+		return $resource(
+			bonitaConfig.getBonitaUrl() + '/API/bdm/businessData/:businessDataType/:persistenceId', // url
+			data, //paramDefaults
+			{
+				getDataQuery: {
+					method: 'GET',
+					params: {
+						q: function () {
+							return data.q;
+						},
+						f: function () {
+							return data.f;
+						}
+					},
+					transformResponse: bonitaUtils.transformPaginateResponse()
+				},// actions
+				getBusinessData: {
+					method: 'GET'					
+				}
+			});
+	});
 'use strict';
 
 /**

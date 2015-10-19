@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('ngBonita').factory('bonitaUtils', function ($http) {
+angular.module('ngBonita').factory('bonitaUtils', function ($http,bonitaConfig) {
 	var api = {};
 
 	/**
@@ -12,7 +12,7 @@ angular.module('ngBonita').factory('bonitaUtils', function ($http) {
 	var paginateResponse = function (data, headersGetter) {
 		// Parse pagination header
 		var strContentRange = headersGetter()['content-range'];
-		var arrayContentRange = strContentRange.split('/');
+		var arrayContentRange = strContentRange ? strContentRange.split('/') :[ bonitaConfig.getDefaultPager().p + '-' + bonitaConfig.getDefaultPager().c];
 		var arrayIndexNumPerPage = arrayContentRange[0].split('-');
 		// Assemble response data with pagination
 		return {
@@ -55,6 +55,6 @@ angular.module('ngBonita').factory('bonitaUtils', function ($http) {
 		var source = buffer.join('&').replace(/%20/g, '+'); 
 		return (source); 
 	};
-	
+	 
 	return api;
 });

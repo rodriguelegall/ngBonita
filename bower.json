@@ -1,20 +1,20 @@
 {
-	"name": "ngBonita",
-	"version": "1.5.0",
-	"main": "./dist/ngBonita.min.js",
-	"description": "AngularJS module for Bonita BPM platform. This module acts as a Bonita REST API client.",
-	"keywords": [
-		"bonita",
-		"angular",
-		"bpm"
-	],
-	"dependencies": {
-		"angular": "^1.2"
-	},
-	"license": "Apache-2.0",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/rodriguelegall/ngBonita.git"
-	},
-	"homepage": "https://github.com/rodriguelegall/ngBonita"
+  "name": "ngBonita",
+  "version": "1.6.0",
+  "main": "./dist/ngBonita.min.js",
+  "description": "AngularJS module for Bonita BPM platform. This module acts as a Bonita REST API client.",
+  "keywords": [
+    "bonita",
+    "angular",
+    "bpm"
+  ],
+  "dependencies": {
+    "angular": "^1.2"
+  },
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rodriguelegall/ngBonita.git"
+  },
+  "homepage": "https://github.com/rodriguelegall/ngBonita"
 }

@@ -6,7 +6,9 @@ ngBonita
   - Download
   - Dependencies
   - Build instructions
-- [Simple example](#simple-example)
+- [Examples](#examples)
+  - Basic example with authentication
+  - Business Data example
 - [Resource Documentation](#resource-documentation)
 
 # About
@@ -62,8 +64,9 @@ grunt release:minor --no-write
 grunt release:major --no-write
 ```
 
-# Simple Example:
+# Examples:
 
+## Basic example with authentication
 The following example will log in Bonita with user "walter.bates" and will list the process definitions that he has the right to start using the browser's console:
 ``` js
 var app = angular.module('appMainModule', ['ngBonita']);
@@ -91,6 +94,16 @@ app.controller('AppController', function($scope, $log, bonitaAuthentication, Pro
 });
 ```
 
+## Business Data example
+The following example will retrieve BDM objects of type `com.company.model.Supplier` using a `find` query.<br/>
+Note that the authentication part is ommited in this sample and be sure to add the `BusinessData` dependency in your controller.
+``` js
+BusinessData.getDataQuery({businessDataType:'com.company.model.Supplier', q:'find'}).$promise.then(function (data) {
+	$log.log('Listing '+ data.items.length +' Supplier BDM(s):');
+	$log.log(data.items);
+});
+```
+
 # Resource documentation
 
 As of latest version, the following resources are available:
@@ -103,3 +116,6 @@ As of latest version, the following resources are available:
 - ProcessDefinition
 - ProcessInstance
 - User
+
+Starting form ngBonita 1.6 a new `BusinessData` resource is avalailable to query BDMs.<br/>
+Each call to this resource requires a mandatory parameter `businessDataType` with the fully qualified Java class of the BDM object.

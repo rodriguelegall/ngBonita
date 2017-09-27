@@ -1,4 +1,7 @@
 ngBonita
+
+**WARNING: this project is no longer maintained.**
+
 ========
 **Table of Content**
 - [About](#about)
